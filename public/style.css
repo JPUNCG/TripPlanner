@@ -3,9 +3,10 @@ Name: Jeethesh Pallinti
 Date: 04.20.2026
 CSC 372-01
 
-CSS for Trip Planner. Organized by hierarchy: Global, Components, then IDs.
+CSS for Trip Planner. Organized by hierarchy: Generic elements, Classes, IDs.
 */
 
+/* --- Generic Elements --- */
 body {
     font-family: 'Inter', sans-serif;
     background-color: #f1f5f9;
@@ -19,263 +20,10 @@ h1, h2, h3 {
     font-weight: 600;
 }
 
-/* Header */
-#main-header {
-    background: #ffffff;
-    padding: 20px 50px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-}
-
-#main-header h1 {
-    font-size: 1.5rem;
-    letter-spacing: -0.5px;
-}
-
-#main-header h1 span {
-    color: #4f46e5;
-    font-weight: 700;
-}
-
-/* Buttons */
 button {
     font-family: inherit;
     cursor: pointer;
     transition: all 0.2s ease;
-}
-
-.btn-primary {
-    background: #4f46e5;
-    color: white;
-    border: none;
-    padding: 10px 24px;
-    border-radius: 10px;
-    font-weight: 500;
-}
-
-.btn-primary:hover {
-    background: #4338ca;
-    transform: translateY(-1px);
-}
-
-.btn-text {
-    background: transparent;
-    border: none;
-    color: #64748b;
-    font-weight: 500;
-}
-
-.btn-text:hover {
-    color: #0f172a;
-}
-
-.btn-secondary-sm, .btn-danger-sm {
-    height: 38px;
-    padding: 0 16px;
-    border-radius: 6px;
-    font-weight: 500;
-    font-size: 0.9rem;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.btn-secondary-sm {
-    background: #f1f5f9;
-    border: 1px solid #e2e8f0;
-    color: #0f172a;
-}
-
-.btn-secondary-sm:hover {
-    background: #e2e8f0;
-}
-
-.btn-danger-sm {
-    background: #fee2e2;
-    color: #dc2626;
-    border: 1px solid #fecaca;
-}
-
-.btn-danger-sm:hover {
-    background: #fecaca;
-}
-
-.hidden {
-    display: none !important;
-}
-
-/* Grid Layout */
-#dashboard-container {
-    padding: 40px 50px;
-    max-width: 1400px;
-    margin: 0 auto;
-}
-
-#trip-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 30px;
-}
-
-/* Mini Trip Cards */
-.trip-card {
-    background: #ffffff;
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    cursor: pointer;
-    border: 1px solid transparent;
-}
-
-.trip-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
-    border-color: #e2e8f0;
-}
-
-.card-img {
-    height: 180px;
-    background-size: cover;
-    background-position: center;
-}
-
-.card-content {
-    padding: 20px;
-}
-
-/* Overlays & Layering */
-.overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(15, 23, 42, 0.4);
-    backdrop-filter: blur(6px);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-#trip-modal {
-    z-index: 1000;
-}
-
-#form-container {
-    z-index: 2000;
-}
-
-.form-card {
-    width: 100%;
-    max-width: 450px;
-    padding: 40px;
-    border-radius: 16px;
-    background: white;
-    box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
-}
-
-/* The Large Modal Card */
-.large-card {
-    background: #ffffff;
-    width: 90%;
-    max-width: 1000px;
-    height: 85vh;
-    border-radius: 16px;
-    overflow-y: auto;
-    position: relative;
-    box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
-    display: flex;
-    flex-direction: column;
-}
-
-.close-btn {
-    position: absolute;
-    top: 15px;
-    right: 20px;
-    background: rgba(0,0,0,0.5);
-    color: white;
-    border: none;
-    width: 35px;
-    height: 35px;
-    border-radius: 50%;
-    font-size: 1.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding-bottom: 4px;
-    z-index: 10;
-}
-
-.close-btn:hover {
-    background: rgba(0,0,0,0.8);
-}
-
-#modal-header {
-    height: 250px;
-    background-size: cover;
-    background-position: center;
-    position: relative;
-    display: flex;
-    align-items: flex-end;
-    padding: 30px;
-}
-
-#modal-header::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
-}
-
-.header-content {
-    position: relative;
-    color: white;
-    z-index: 1;
-}
-
-#modal-title {
-    font-size: 2.5rem;
-    margin-bottom: 5px;
-}
-
-.modal-body {
-    padding: 30px;
-    flex-grow: 1;
-}
-
-.dashboard-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 30px;
-}
-
-/* Widgets */
-.info-widget {
-    background: #f1f5f9;
-    border: 1px solid #e2e8f0;
-    padding: 20px;
-    border-radius: 10px;
-    margin-bottom: 20px;
-}
-
-.info-widget h3 {
-    font-size: 1.1rem;
-    margin-bottom: 15px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.ai-widget {
-    background: linear-gradient(145deg, #eef2ff, #e0e7ff);
-    border-color: #c7d2fe;
-}
-
-.ai-widget h3 {
-    color: #4f46e5;
 }
 
 textarea {
@@ -308,52 +56,50 @@ ul#activities-list li {
     align-items: center;
 }
 
-.delete-act-btn {
-    background: transparent;
-    color: #dc2626;
+/* --- Classes --- */
+.btn-primary {
+    background: #4f46e5;
+    color: white;
     border: none;
-    font-weight: bold;
-    cursor: pointer;
-    padding: 5px;
-    border-radius: 4px;
+    padding: 10px 24px;
+    border-radius: 10px;
+    font-weight: 500;
 }
 
-.delete-act-btn:hover {
-    background: #fee2e2;
+.btn-primary:hover {
+    background: #4338ca;
+    transform: translateY(-1px);
 }
 
-.inline-form {
-    display: flex;
-    gap: 10px;
-}
-
-.inline-form input {
-    flex-grow: 1;
-    padding: 10px;
-    border: 1px solid #e2e8f0;
+.btn-secondary-sm, #delete-trip-btn {
+    height: 38px;
+    padding: 0 16px;
     border-radius: 6px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.form-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
-    margin-bottom: 25px;
-}
-
-.form-grid input {
-    width: 100%;
-    padding: 14px;
+.btn-secondary-sm {
+    background: #f1f5f9;
     border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    box-sizing: border-box;
-    font-family: inherit;
-    font-size: 1rem;
+    color: #0f172a;
 }
 
-.form-grid input:focus {
-    outline: none;
-    border-color: #4f46e5;
+.btn-secondary-sm:hover {
+    background: #e2e8f0;
+}
+
+.card-content {
+    padding: 20px;
+}
+
+.card-img {
+    height: 180px;
+    background-size: cover;
+    background-position: center;
 }
 
 .date-group {
@@ -369,11 +115,275 @@ ul#activities-list li {
     text-transform: uppercase;
 }
 
-.header-actions {
+.delete-act-btn {
+    background: transparent;
+    color: #dc2626;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 4px;
+}
+
+.delete-act-btn:hover {
+    background: #fee2e2;
+}
+
+.error-text {
+    color: #ef4444;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.info-widget {
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.info-widget h3 {
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.italic-tip {
+    font-size: 0.8rem;
+    margin-top: 5px;
+    font-style: italic;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(15, 23, 42, 0.4);
+    backdrop-filter: blur(6px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.status-on-time {
+    color: #10b981;
+}
+
+.trip-card {
+    background: #ffffff;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    border: 1px solid transparent;
+}
+
+.trip-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+    border-color: #e2e8f0;
+}
+
+/* --- IDs --- */
+#activity-form {
+    display: flex;
+    gap: 10px;
+}
+
+#activity-form input {
+    flex-grow: 1;
+    padding: 10px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+}
+
+#ai-widget {
+    background: linear-gradient(145deg, #eef2ff, #e0e7ff);
+    border-color: #c7d2fe;
+}
+
+#ai-widget h3 {
+    color: #4f46e5;
+}
+
+#cancel-btn {
+    background: transparent;
+    border: none;
+    color: #64748b;
+    font-weight: 500;
+}
+
+#cancel-btn:hover {
+    color: #0f172a;
+}
+
+#close-modal-btn {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    background: rgba(0,0,0,0.5);
+    color: white;
+    border: none;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 4px;
+    z-index: 10;
+}
+
+#close-modal-btn:hover {
+    background: rgba(0,0,0,0.8);
+}
+
+#dashboard-container {
+    padding: 40px 50px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+#dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+}
+
+#delete-trip-btn {
+    background: #fee2e2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+}
+
+#delete-trip-btn:hover {
+    background: #fecaca;
+}
+
+#form-container {
+    z-index: 2000;
+}
+
+#form-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    margin-bottom: 25px;
+}
+
+#form-grid input {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-family: inherit;
+    font-size: 1rem;
+}
+
+#form-grid input:focus {
+    outline: none;
+    border-color: #4f46e5;
+}
+
+#header-actions {
     position: absolute;
     top: 20px;
     left: 20px;
     display: flex;
     gap: 12px;
     z-index: 10;
+}
+
+#header-content {
+    position: relative;
+    color: white;
+    z-index: 1;
+}
+
+#large-card {
+    background: #ffffff;
+    width: 90%;
+    max-width: 1000px;
+    height: 85vh;
+    border-radius: 16px;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+#main-header {
+    background: #ffffff;
+    padding: 20px 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+#main-header h1 {
+    font-size: 1.5rem;
+    letter-spacing: -0.5px;
+}
+
+#main-header h1 span {
+    color: #4f46e5;
+    font-weight: 700;
+}
+
+#modal-body {
+    padding: 30px;
+    flex-grow: 1;
+}
+
+#modal-header {
+    height: 250px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    padding: 30px;
+}
+
+#modal-header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+}
+
+#modal-title {
+    font-size: 2.5rem;
+    margin-bottom: 5px;
+}
+
+#trip-form {
+    width: 100%;
+    max-width: 450px;
+    padding: 40px;
+    border-radius: 16px;
+    background: white;
+    box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+}
+
+#trip-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 30px;
+}
+
+#trip-modal {
+    z-index: 1000;
 }

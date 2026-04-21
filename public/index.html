@@ -10,7 +10,7 @@
 </head>
 <body>
     <header id="main-header">
-        <div class="logo-area">
+        <div>
             <h1>Trip<span>Planner</span></h1>
         </div>
         <button id="add-trip-btn" class="btn-primary">+ New Trip</button>
@@ -18,9 +18,9 @@
 
     <main id="dashboard-container">
         <div id="form-container" class="hidden overlay">
-            <form id="trip-form" class="card form-card">
+            <form id="trip-form">
                 <h2 id="form-title">Plan New Trip</h2>
-                <div class="form-grid">
+                <div id="form-grid">
                     <input type="text" id="dest-input" placeholder="Destination (e.g. Paris)" required>
                     <input type="url" id="img-input" placeholder="Image URL (Optional)">
                     <div class="date-group">
@@ -33,9 +33,9 @@
                     </div>
                     <input type="text" id="flight-input" placeholder="Flight # (Optional)">
                 </div>
-                <div class="form-footer">
+                <div>
                     <button type="submit" class="btn-primary">Save Trip</button>
-                    <button type="button" id="cancel-btn" class="btn-text">Cancel</button>
+                    <button type="button" id="cancel-btn">Cancel</button>
                 </div>
             </form>
         </div>
@@ -45,37 +45,37 @@
         </section>
 
         <div id="trip-modal" class="hidden overlay">
-            <div class="large-card">
-                <button id="close-modal-btn" class="close-btn">&times;</button>
+            <div id="large-card">
+                <button id="close-modal-btn">&times;</button>
                 <header id="modal-header">
-                    <div class="header-actions">
+                    <div id="header-actions">
                         <button id="edit-trip-btn" class="btn-secondary-sm">Edit Trip</button>
-                        <button id="delete-trip-btn" class="btn-danger-sm">Delete</button>
+                        <button id="delete-trip-btn">Delete</button>
                     </div>
-                    <div class="header-content">
+                    <div id="header-content">
                         <h2 id="modal-title">Destination</h2>
                         <p id="modal-dates">Dates</p>
                     </div>
                 </header>
                 
-                <div class="modal-body">
-                    <div class="dashboard-grid">
-                        <div class="dash-col">
+                <div id="modal-body">
+                    <div id="dashboard-grid">
+                        <div>
                             <div class="info-widget">
                                 <h3>Flight Tracking</h3>
-                                <div id="flight-info" class="widget-content"></div>
+                                <div id="flight-info"></div>
                             </div>
                             <div class="info-widget">
                                 <h3> Weather</h3>
-                                <div id="weather-widget" class="widget-content"></div>
+                                <div id="weather-widget"></div>
                             </div>
-                            <div class="info-widget ai-widget">
+                            <div class="info-widget" id="ai-widget">
                                 <h3> AI Suggestions</h3>
-                                <div id="ai-suggestions" class="widget-content"></div>
+                                <div id="ai-suggestions"></div>
                             </div>
                         </div>
 
-                        <div class="dash-col">
+                        <div>
                             <div class="info-widget">
                                 <h3>Travel Notes</h3>
                                 <textarea id="trip-notes" placeholder="Jot down your plans..."></textarea>
@@ -84,9 +84,9 @@
                             <div class="info-widget">
                                 <h3> Itinerary & Activities</h3>
                                 <ul id="activities-list"></ul>
-                                <form id="activity-form" class="inline-form">
+                                <form id="activity-form">
                                     <input type="text" id="act-name" placeholder="Add new activity..." required>
-                                    <button type="submit" class="btn-primary btn-sm">+</button>
+                                    <button type="submit" class="btn-primary">+</button>
                                 </form>
                             </div>
                         </div>

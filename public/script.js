@@ -1,21 +1,28 @@
-/**
- * Name: Jeethesh Pallinti
- * Date: 04.20.2026
- * CSC 372-01
- * * This script handles the frontend logic for the Trip Planner application.
- * It manages state for the active trip, coordinates with the Node.js API
- * for data persistence, and dynamically updates the DOM using createElement.
- */
+/*
+Name: Jeethesh Pallinti
+Date: 04.20.2026
+CSC 372-01
+
+This script handles the frontend logic for the Trip Planner application.
+It manages state for the active trip, coordinates with the Node.js API
+for data persistence, and dynamically updates the DOM using createElement.
+*/
 
 let activeTripId = null;
 let editingTripId = null; 
 let allTrips = []; 
 
+/**
+ * Initializes the application by fetching trips and setting up listeners.
+ */
 function init() {
     fetchTrips();
     setupEventListeners();
 }
 
+/**
+ * Attaches event listeners to interactive DOM elements.
+ */
 function setupEventListeners() {
     const addBtn = document.getElementById('add-trip-btn');
     const cancelBtn = document.getElementById('cancel-btn');
@@ -49,6 +56,9 @@ function setupEventListeners() {
     saveNotesBtn.addEventListener('click', saveTripNotes);
 }
 
+/**
+ * Fetches all trips from the API and renders them on the page.
+ */
 async function fetchTrips() {
     try {
         const response = await fetch('/api/trips');
@@ -59,6 +69,10 @@ async function fetchTrips() {
     }
 }
 
+/**
+ * Renders the grid of trip cards.
+ * @param {Array} trips - The array of trip objects to render
+ */
 function renderTripGrid(trips) {
     const grid = document.getElementById('trip-grid');
     grid.innerHTML = ''; 
@@ -89,6 +103,10 @@ function renderTripGrid(trips) {
     });
 }
 
+/**
+ * Opens the detailed modal for a specific trip and populates the data.
+ * @param {Object} trip - The trip object to display
+ */
 function openTripModal(trip) {
     activeTripId = trip.id;
     const modal = document.getElementById('trip-modal');
@@ -100,30 +118,77 @@ function openTripModal(trip) {
 
     document.getElementById('trip-notes').value = trip.notes || '';
 
-    // Flight Tracking Sample Text
+    // Flight Tracking Sample Text Generation
     const flight = trip.flight_number || 'N/A';
-    document.getElementById('flight-info').innerHTML = `
-        <p><strong>Status:</strong> <span style="color: #10b981;">On Time</span></p>
-        <p><strong>Flight:</strong> ${flight}</p>
-        <p><strong>Gate:</strong> B12</p>
-        <p style="font-size: 0.8rem; margin-top: 5px; font-style: italic;">Live tracking API placeholder</p>
-    `;
+    const flightInfo = document.getElementById('flight-info');
+    flightInfo.innerHTML = ''; 
 
-    // AI Suggestions Sample Text
-    document.getElementById('ai-suggestions').innerHTML = `
-        <p>Based on your trip to <strong>${trip.destination}</strong>, you might enjoy visiting the local historic district and trying the seasonal food markets.</p>
-        <p><em>Pro-tip: Wednesday mornings are the least crowded!</em></p>
-    `;
+    const statusP = document.createElement('p');
+    const statusStrong = document.createElement('strong');
+    statusStrong.textContent = 'Status: ';
+    const statusSpan = document.createElement('span');
+    statusSpan.textContent = 'On Time';
+    statusSpan.className = 'status-on-time';
+    statusP.appendChild(statusStrong);
+    statusP.appendChild(statusSpan);
+
+    const flightP = document.createElement('p');
+    const flightStrong = document.createElement('strong');
+    flightStrong.textContent = 'Flight: ';
+    flightP.appendChild(flightStrong);
+    flightP.appendChild(document.createTextNode(flight));
+
+    const gateP = document.createElement('p');
+    const gateStrong = document.createElement('strong');
+    gateStrong.textContent = 'Gate: ';
+    gateP.appendChild(gateStrong);
+    gateP.appendChild(document.createTextNode('B12'));
+
+    const tipP = document.createElement('p');
+    tipP.textContent = 'Live tracking API placeholder';
+    tipP.className = 'italic-tip';
+
+    flightInfo.appendChild(statusP);
+    flightInfo.appendChild(flightP);
+    flightInfo.appendChild(gateP);
+    flightInfo.appendChild(tipP);
+
+    // AI Suggestions Sample Text Generation
+    const aiSug = document.getElementById('ai-suggestions');
+    aiSug.innerHTML = ''; 
+
+    const p1 = document.createElement('p');
+    p1.textContent = 'Based on your trip to ';
+    const strongDest = document.createElement('strong');
+    strongDest.textContent = trip.destination;
+    p1.appendChild(strongDest);
+    p1.appendChild(document.createTextNode(', you might enjoy visiting the local historic district and trying the seasonal food markets.'));
+
+    const p2 = document.createElement('p');
+    const emTip = document.createElement('em');
+    emTip.textContent = 'Pro-tip: Wednesday mornings are the least crowded!';
+    p2.appendChild(emTip);
+
+    aiSug.appendChild(p1);
+    aiSug.appendChild(p2);
 
     updateWeather(trip.destination);
     fetchActivities(trip.id);
 }
 
+/**
+ * Formats an ISO string to YYYY-MM-DD for date inputs.
+ * @param {string} isoString - The ISO date string
+ * @return {string} The formatted date string
+ */
 function formatForInput(isoString) {
     if(!isoString) return '';
     return new Date(isoString).toISOString().split('T')[0];
 }
 
+/**
+ * Opens the form pre-filled with data to edit an existing trip.
+ */
 function openEditForm() {
     const trip = allTrips.find(t => t.id === activeTripId);
     if (!trip) return;
@@ -140,6 +205,10 @@ function openEditForm() {
     document.getElementById('form-container').classList.remove('hidden');
 }
 
+/**
+ * Handles the submission of the trip form (create or edit).
+ * @param {Event} e - The form submit event
+ */
 async function handleTripSubmit(e) {
     e.preventDefault();
     const tripData = {
@@ -172,6 +241,9 @@ async function handleTripSubmit(e) {
     }
 }
 
+/**
+ * Deletes the currently active trip after confirmation.
+ */
 async function deleteActiveTrip() {
     if (!confirm("Are you sure you want to delete this trip?")) return;
 
@@ -180,9 +252,17 @@ async function deleteActiveTrip() {
     fetchTrips();
 }
 
+/**
+ * Fetches and displays weather data for a given city.
+ * @param {string} city - The name of the city
+ */
 async function updateWeather(city) {
     const widget = document.getElementById('weather-widget');
-    widget.innerHTML = '<p>Loading forecast...</p>'; 
+    widget.innerHTML = ''; 
+    
+    const loadingP = document.createElement('p');
+    loadingP.textContent = 'Loading forecast...';
+    widget.appendChild(loadingP);
 
     try {
         const cityName = city.split(',')[0].trim();
@@ -191,15 +271,34 @@ async function updateWeather(city) {
         if (!response.ok) throw new Error("API Error");
         let data = await response.json();
 
-        widget.innerHTML = `
-            <p><strong>Current Temp:</strong> ${data.temperature}°C</p>
-            <p><strong>Windspeed:</strong> ${data.windspeed} km/h</p>
-        `;
+        widget.innerHTML = '';
+
+        const tempP = document.createElement('p');
+        const tempStrong = document.createElement('strong');
+        tempStrong.textContent = 'Current Temp: ';
+        tempP.appendChild(tempStrong);
+        tempP.appendChild(document.createTextNode(`${data.temperature}°C`));
+
+        const windP = document.createElement('p');
+        const windStrong = document.createElement('strong');
+        windStrong.textContent = 'Windspeed: ';
+        windP.appendChild(windStrong);
+        windP.appendChild(document.createTextNode(`${data.windspeed} km/h`));
+
+        widget.appendChild(tempP);
+        widget.appendChild(windP);
     } catch (err) {
-        widget.innerHTML = `<p style="color: #ef4444;">Weather data unavailable.</p>`;
+        widget.innerHTML = '';
+        const errP = document.createElement('p');
+        errP.textContent = 'Weather data unavailable.';
+        errP.className = 'error-text';
+        widget.appendChild(errP);
     }
 }
 
+/**
+ * Saves notes written in the textarea to the backend database.
+ */
 async function saveTripNotes() {
     const notes = document.getElementById('trip-notes').value;
     if (!activeTripId) return;
@@ -211,6 +310,10 @@ async function saveTripNotes() {
     });
 }
 
+/**
+ * Handles the submission of the new activity form.
+ * @param {Event} e - The form submit event
+ */
 async function handleActivitySubmit(e) {
     e.preventDefault();
     const activityData = {
@@ -231,11 +334,19 @@ async function handleActivitySubmit(e) {
     }
 }
 
+/**
+ * Deletes a specific activity from a trip.
+ * @param {number|string} activityId - The ID of the activity to delete
+ */
 async function deleteActivity(activityId) {
     await fetch(`/api/activities/${activityId}`, { method: 'DELETE' });
     fetchActivities(activeTripId);
 }
 
+/**
+ * Fetches and renders activities for a given trip.
+ * @param {number|string} tripId - The ID of the trip
+ */
 async function fetchActivities(tripId) {
     const response = await fetch(`/api/trips/${tripId}/activities`);
     const activities = await response.json();
@@ -256,6 +367,11 @@ async function fetchActivities(tripId) {
     });
 }
 
+/**
+ * Formats a date string into a localized, readable format.
+ * @param {string} dateStr - The date string to format
+ * @return {string} The human-readable date string
+ */
 function formatDate(dateStr) {
     const options = { month: 'short', day: 'numeric', year: 'numeric' };
     return new Date(dateStr).toLocaleDateString(undefined, options);
