@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trip Planner | Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <header id="main-header">
+        <div class="logo-area">
+            <h1>Trip<span>Planner</span></h1>
+        </div>
+        <button id="add-trip-btn" class="btn-primary">+ New Trip</button>
+    </header>
+
+    <main id="dashboard-container">
+        <div id="form-container" class="hidden overlay">
+            <form id="trip-form" class="card form-card">
+                <h2 id="form-title">Plan New Trip</h2>
+                <div class="form-grid">
+                    <input type="text" id="dest-input" placeholder="Destination (e.g. Paris)" required>
+                    <input type="url" id="img-input" placeholder="Image URL (Optional)">
+                    <div class="date-group">
+                        <label>Start Date</label>
+                        <input type="date" id="start-input" required>
+                    </div>
+                    <div class="date-group">
+                        <label>End Date</label>
+                        <input type="date" id="end-input" required>
+                    </div>
+                    <input type="text" id="flight-input" placeholder="Flight # (Optional)">
+                </div>
+                <div class="form-footer">
+                    <button type="submit" class="btn-primary">Save Trip</button>
+                    <button type="button" id="cancel-btn" class="btn-text">Cancel</button>
+                </div>
+            </form>
+        </div>
+
+        <section id="trips-section">
+            <div id="trip-grid"></div>
+        </section>
+
+        <div id="trip-modal" class="hidden overlay">
+            <div class="large-card">
+                <button id="close-modal-btn" class="close-btn">&times;</button>
+                <header id="modal-header">
+                    <div class="header-actions">
+                        <button id="edit-trip-btn" class="btn-secondary-sm">Edit Trip</button>
+                        <button id="delete-trip-btn" class="btn-danger-sm">Delete</button>
+                    </div>
+                    <div class="header-content">
+                        <h2 id="modal-title">Destination</h2>
+                        <p id="modal-dates">Dates</p>
+                    </div>
+                </header>
+                
+                <div class="modal-body">
+                    <div class="dashboard-grid">
+                        <div class="dash-col">
+                            <div class="info-widget">
+                                <h3>Flight Tracking</h3>
+                                <div id="flight-info" class="widget-content"></div>
+                            </div>
+                            <div class="info-widget">
+                                <h3> Weather</h3>
+                                <div id="weather-widget" class="widget-content"></div>
+                            </div>
+                            <div class="info-widget ai-widget">
+                                <h3> AI Suggestions</h3>
+                                <div id="ai-suggestions" class="widget-content"></div>
+                            </div>
+                        </div>
+
+                        <div class="dash-col">
+                            <div class="info-widget">
+                                <h3>Travel Notes</h3>
+                                <textarea id="trip-notes" placeholder="Jot down your plans..."></textarea>
+                                <button id="save-notes-btn" class="btn-secondary-sm">Save Notes</button>
+                            </div>
+                            <div class="info-widget">
+                                <h3> Itinerary & Activities</h3>
+                                <ul id="activities-list"></ul>
+                                <form id="activity-form" class="inline-form">
+                                    <input type="text" id="act-name" placeholder="Add new activity..." required>
+                                    <button type="submit" class="btn-primary btn-sm">+</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
