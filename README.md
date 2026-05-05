@@ -1,3 +1,5 @@
 # TripPlanner
 
-https://uncg-my.sharepoint.com/:v:/g/personal/j_pallinti_uncg_edu/IQCckkn1KHDCRqi3tGNZjwnlAZ-3N3ItuWVJiLhSFuHzwxo?e=bvptNm
+If deploying locally, just open the folder in cmd and type in 'node server.js'
+...
+finish soon

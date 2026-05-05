@@ -5,7 +5,7 @@ CSC 372-01
 
 This script handles the frontend logic for the Trip Planner application.
 It manages state for the active trip, coordinates with the Node.js API
-for data persistence, and dynamically updates the DOM using createElement.
+for data persistence, and dynamically updates the DOM safely (no innerHTML).
 */
 
 let activeTripId = null;
@@ -32,6 +32,7 @@ function setupEventListeners() {
     const saveNotesBtn = document.getElementById('save-notes-btn');
     const editTripBtn = document.getElementById('edit-trip-btn');
     const deleteTripBtn = document.getElementById('delete-trip-btn');
+    const logoutBtn = document.getElementById('logout-btn');
 
     addBtn.addEventListener('click', () => {
         editingTripId = null;
@@ -48,12 +49,26 @@ function setupEventListeners() {
         document.getElementById('trip-modal').classList.add('hidden');
     });
 
+    logoutBtn.addEventListener('click', handleLogout);
+
     editTripBtn.addEventListener('click', openEditForm);
     deleteTripBtn.addEventListener('click', deleteActiveTrip);
 
     tripForm.addEventListener('submit', handleTripSubmit);
     activityForm.addEventListener('submit', handleActivitySubmit);
     saveNotesBtn.addEventListener('click', saveTripNotes);
+}
+
+/**
+ * Handles securely hiding the app and reverting to the login screen.
+ */
+function handleLogout() {
+    activeTripId = null;
+    editingTripId = null;
+    document.getElementById('main-app').classList.add('hidden');
+    document.getElementById('login-overlay').classList.remove('hidden');
+    document.getElementById('login-form').reset();
+    document.getElementById('login-error').classList.add('hidden');
 }
 
 /**
@@ -70,12 +85,12 @@ async function fetchTrips() {
 }
 
 /**
- * Renders the grid of trip cards.
+ * Renders the grid of trip cards safely.
  * @param {Array} trips - The array of trip objects to render
  */
 function renderTripGrid(trips) {
     const grid = document.getElementById('trip-grid');
-    grid.innerHTML = ''; 
+    grid.replaceChildren(); // Safely clears elements
 
     trips.forEach(trip => {
         const card = document.createElement('div');
@@ -118,68 +133,12 @@ function openTripModal(trip) {
 
     document.getElementById('trip-notes').value = trip.notes || '';
 
-    // Flight Tracking Sample Text Generation
-    const flight = trip.flight_number || 'N/A';
-    const flightInfo = document.getElementById('flight-info');
-    flightInfo.innerHTML = ''; 
-
-    const statusP = document.createElement('p');
-    const statusStrong = document.createElement('strong');
-    statusStrong.textContent = 'Status: ';
-    const statusSpan = document.createElement('span');
-    statusSpan.textContent = 'On Time';
-    statusSpan.className = 'status-on-time';
-    statusP.appendChild(statusStrong);
-    statusP.appendChild(statusSpan);
-
-    const flightP = document.createElement('p');
-    const flightStrong = document.createElement('strong');
-    flightStrong.textContent = 'Flight: ';
-    flightP.appendChild(flightStrong);
-    flightP.appendChild(document.createTextNode(flight));
-
-    const gateP = document.createElement('p');
-    const gateStrong = document.createElement('strong');
-    gateStrong.textContent = 'Gate: ';
-    gateP.appendChild(gateStrong);
-    gateP.appendChild(document.createTextNode('B12'));
-
-    const tipP = document.createElement('p');
-    tipP.textContent = 'Live tracking API placeholder';
-    tipP.className = 'italic-tip';
-
-    flightInfo.appendChild(statusP);
-    flightInfo.appendChild(flightP);
-    flightInfo.appendChild(gateP);
-    flightInfo.appendChild(tipP);
-
-    // AI Suggestions Sample Text Generation
-    const aiSug = document.getElementById('ai-suggestions');
-    aiSug.innerHTML = ''; 
-
-    const p1 = document.createElement('p');
-    p1.textContent = 'Based on your trip to ';
-    const strongDest = document.createElement('strong');
-    strongDest.textContent = trip.destination;
-    p1.appendChild(strongDest);
-    p1.appendChild(document.createTextNode(', you might enjoy visiting the local historic district and trying the seasonal food markets.'));
-
-    const p2 = document.createElement('p');
-    const emTip = document.createElement('em');
-    emTip.textContent = 'Pro-tip: Wednesday mornings are the least crowded!';
-    p2.appendChild(emTip);
-
-    aiSug.appendChild(p1);
-    aiSug.appendChild(p2);
-
     updateWeather(trip.destination);
     fetchActivities(trip.id);
 }
 
 /**
  * Formats an ISO string to YYYY-MM-DD for date inputs.
- * @param {string} isoString - The ISO date string
- * @return {string} The formatted date string
  */
 function formatForInput(isoString) {
     if(!isoString) return '';
@@ -207,7 +166,6 @@ function openEditForm() {
 
 /**
  * Handles the submission of the trip form (create or edit).
- * @param {Event} e - The form submit event
  */
 async function handleTripSubmit(e) {
     e.preventDefault();
@@ -253,12 +211,13 @@ async function deleteActiveTrip() {
 }
 
 /**
- * Fetches and displays weather data for a given city.
+ * Fetches and displays a 7-day weather forecast.
+ * Parses the array to build compact DOM rows for the widget.
  * @param {string} city - The name of the city
  */
 async function updateWeather(city) {
     const widget = document.getElementById('weather-widget');
-    widget.innerHTML = ''; 
+    widget.replaceChildren(); 
     
     const loadingP = document.createElement('p');
     loadingP.textContent = 'Loading forecast...';
@@ -266,29 +225,42 @@ async function updateWeather(city) {
 
     try {
         const cityName = city.split(',')[0].trim();
-        let response = await fetch(`/api/weather?city=${encodeURIComponent(cityName)}`);
+        const response = await fetch(`/api/weather?city=${encodeURIComponent(cityName)}`);
         
         if (!response.ok) throw new Error("API Error");
-        let data = await response.json();
+        const data = await response.json();
 
-        widget.innerHTML = '';
+        widget.replaceChildren();
 
-        const tempP = document.createElement('p');
-        const tempStrong = document.createElement('strong');
-        tempStrong.textContent = 'Current Temp: ';
-        tempP.appendChild(tempStrong);
-        tempP.appendChild(document.createTextNode(`${data.temperature}°C`));
+        data.forecast.forEach(day => {
+            // Adjust date format (add time to ensure UTC timezone doesn't offset the day backwards)
+            const dateObj = new Date(day.date + 'T12:00:00Z');
+            const dayName = dateObj.toLocaleDateString('en-US', { weekday: 'short' });
 
-        const windP = document.createElement('p');
-        const windStrong = document.createElement('strong');
-        windStrong.textContent = 'Windspeed: ';
-        windP.appendChild(windStrong);
-        windP.appendChild(document.createTextNode(`${data.windspeed} km/h`));
+            const row = document.createElement('div');
+            row.className = 'weather-row';
 
-        widget.appendChild(tempP);
-        widget.appendChild(windP);
+            const daySpan = document.createElement('span');
+            daySpan.className = 'weather-day';
+            daySpan.textContent = dayName;
+
+            const tempsSpan = document.createElement('span');
+            tempsSpan.className = 'weather-temps';
+            tempsSpan.textContent = `${day.minTemp}° / ${day.maxTemp}°F`;
+
+            const precipSpan = document.createElement('span');
+            precipSpan.className = 'weather-precip';
+            precipSpan.textContent = day.precipitation > 0 ? `${day.precipitation} in` : '--';
+
+            row.appendChild(daySpan);
+            row.appendChild(tempsSpan);
+            row.appendChild(precipSpan);
+            
+            widget.appendChild(row);
+        });
+
     } catch (err) {
-        widget.innerHTML = '';
+        widget.replaceChildren();
         const errP = document.createElement('p');
         errP.textContent = 'Weather data unavailable.';
         errP.className = 'error-text';
@@ -312,7 +284,6 @@ async function saveTripNotes() {
 
 /**
  * Handles the submission of the new activity form.
- * @param {Event} e - The form submit event
  */
 async function handleActivitySubmit(e) {
     e.preventDefault();
@@ -336,7 +307,6 @@ async function handleActivitySubmit(e) {
 
 /**
  * Deletes a specific activity from a trip.
- * @param {number|string} activityId - The ID of the activity to delete
  */
 async function deleteActivity(activityId) {
     await fetch(`/api/activities/${activityId}`, { method: 'DELETE' });
@@ -344,14 +314,13 @@ async function deleteActivity(activityId) {
 }
 
 /**
- * Fetches and renders activities for a given trip.
- * @param {number|string} tripId - The ID of the trip
+ * Fetches and renders activities for a given trip securely.
  */
 async function fetchActivities(tripId) {
     const response = await fetch(`/api/trips/${tripId}/activities`);
     const activities = await response.json();
     const list = document.getElementById('activities-list');
-    list.innerHTML = '';
+    list.replaceChildren(); // Safely clear
 
     activities.forEach(act => {
         const li = document.createElement('li');
@@ -369,12 +338,37 @@ async function fetchActivities(tripId) {
 
 /**
  * Formats a date string into a localized, readable format.
- * @param {string} dateStr - The date string to format
- * @return {string} The human-readable date string
  */
 function formatDate(dateStr) {
     const options = { month: 'short', day: 'numeric', year: 'numeric' };
     return new Date(dateStr).toLocaleDateString(undefined, options);
 }
 
-window.addEventListener('load', init);
+// Handle login screen on page load
+window.addEventListener('load', () => {
+    const loginForm = document.getElementById('login-form');
+    
+    loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+
+        try {
+            const response = await fetch('/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+
+            if (response.ok) {
+                document.getElementById('login-overlay').classList.add('hidden');
+                document.getElementById('main-app').classList.remove('hidden');
+                init();
+            } else {
+                document.getElementById('login-error').classList.remove('hidden');
+            }
+        } catch (err) {
+            console.error("Login request failed", err);
+        }
+    });
+});

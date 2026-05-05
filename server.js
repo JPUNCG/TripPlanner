@@ -21,6 +21,25 @@ const pool = new Pool({
     ssl: { rejectUnauthorized: false }
 });
 
+// POST simple login
+app.post('/api/login', async (req, res) => {
+    const { username, password } = req.body;
+    try {
+        const result = await pool.query(
+            'SELECT * FROM users WHERE username = $1 AND password = $2',
+            [username, password]
+        );
+        
+        if (result.rows.length > 0) {
+            res.json({ success: true, user: result.rows[0].username });
+        } else {
+            res.status(401).json({ error: "Invalid credentials" });
+        }
+    } catch (err) {
+        res.status(500).json({ error: "Database error" });
+    }
+});
+
 // GET all trips
 app.get('/api/trips', async (req, res) => {
     try {
@@ -86,6 +105,7 @@ app.delete('/api/activities/:id', async (req, res) => {
     res.sendStatus(200);
 });
 
+// GET weather forecast (7 days, Fahrenheit, Inches)
 app.get('/api/weather', async (req, res) => {
     const { city } = req.query;
     if (!city) return res.status(400).json({ error: "City required" });
@@ -101,14 +121,22 @@ app.get('/api/weather', async (req, res) => {
 
         const { latitude, longitude } = geoData.results[0];
 
-        // Step 2: Weather
-        const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true`);
+        // Step 2: 7-Day Daily Weather Forecast (Fahrenheit & Inches)
+        const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&daily=temperature_2m_max,temperature_2m_min,precipitation_sum&temperature_unit=fahrenheit&precipitation_unit=inch&timezone=auto`;
+        const weatherRes = await fetch(weatherUrl);
         const weatherData = await weatherRes.json();
 
-        res.json({
-            temperature: weatherData.current_weather.temperature,
-            windspeed: weatherData.current_weather.windspeed
+        // Map arrays into a clean daily object structure
+        const forecast = weatherData.daily.time.map((dateStr, i) => {
+            return {
+                date: dateStr,
+                maxTemp: weatherData.daily.temperature_2m_max[i],
+                minTemp: weatherData.daily.temperature_2m_min[i],
+                precipitation: weatherData.daily.precipitation_sum[i]
+            };
         });
+
+        res.json({ forecast });
     } catch (err) {
         console.error("Weather API Error:", err);
         res.status(500).json({ error: "Weather fetch failed" });
