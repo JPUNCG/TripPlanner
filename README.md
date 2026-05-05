@@ -34,7 +34,7 @@ To run this project locally on your machine:
 ### Design Choices
 * **Frontend:** Built with Vanilla JavaScript, HTML, and CSS. I chose this as the scope felt pretty small, I regret not using React instead.
 * **Backend & External API:** Node.js with Express to build a lightweight, fast REST API. The app integrates the Open-Meteo API to dynamically fetch and display 7-day weather forecasts based on the destination.
-* **Database Schema & Auth:** Used Neon PostgreSQL with a relational schema. I also implemented basic login functionality with a simple table.
+* **Database Schema & Auth:** Used Neon PostgreSQL with a relational schema consisting of users, trips, and activities tables to make the project as simple as possible. The activities table uses the trip's ID as a foreign key to maintain a clean one-to-many relationship. I also implemented basic login functionality with a simple table.
 
 ### Challenges
 The most challenging aspect was managing the DOM state without a frontend framework. Synchronizing the UI with the PostgreSQL database during every CRUD operation required annoying event handling to ensure a synced application.
