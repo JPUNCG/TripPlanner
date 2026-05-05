@@ -275,11 +275,17 @@ async function saveTripNotes() {
     const notes = document.getElementById('trip-notes').value;
     if (!activeTripId) return;
 
-    await fetch(`/api/trips/${activeTripId}/notes`, {
+    // Add 'const response =' right here
+    const response = await fetch(`/api/trips/${activeTripId}/notes`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ notes })
     });
+    
+    if (response.ok) {
+        // Now this will execute successfully and update the local state
+        await fetchTrips();
+    }
 }
 
 /**
